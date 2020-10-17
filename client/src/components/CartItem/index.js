@@ -1,10 +1,15 @@
 import React from 'react';
-import { useStoreContext } from '../../utils/GlobalState';
-import { REMOVE_FROM_CART, UPDATE_CART_QUANTITY } from '../../utils/actions';
+// import { useStoreContext } from '../../utils/GlobalState';
+import { REMOVE_FROM_CART, UPDATE_CART_QUANTITY } from '../../utils/store/actions';
 import { idbPromise } from "../../utils/helpers";
 
+//useslector = state
+import { useDispatch } from 'react-redux'
+
 const CartItem = ({ item }) => {
-  const [, dispatch] = useStoreContext();
+  // const [dispatch] = useStoreContext();
+  const dispatch = useDispatch();
+
 
   const removeFromCart = item => {
     dispatch({
@@ -65,5 +70,23 @@ const CartItem = ({ item }) => {
     </div>
   );
 }
+// //cart props
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     addMultipleToCart: cart => dispatch({
+//       type: ADD_MULTIPLE_TO_CART,
+//       products: [...cart]
+//     })
+//      addMultipleToCart: cart => dispatch({
+  //       type: ADD_MULTIPLE_TO_CART,
+  //       products: [...cart]
+  //     })
+//   }
+// }
 
+// // export default Cart;
+// //wrap cart component to connect to redux store
+// export default connect(
+//   mapDispatchToProps
+// )(CartItem)
 export default CartItem;

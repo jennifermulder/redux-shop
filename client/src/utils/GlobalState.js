@@ -1,6 +1,6 @@
 //instantiate a new Context object - create container to hold global state. useContext = use state created from createContext
 import React, { createContext, useContext } from "react";
-import { useProductReducer } from './reducers';
+import { useProductReducer } from './store/reducers';
 
 const StoreContext = createContext();
 //deconstruct the context created. Context = { Provider (wrap application to accept props), Consumer (grab and use data from Provider)}
@@ -27,4 +27,4 @@ const useStoreContext = () => {
   return useContext(StoreContext);
 };
 
-export { StoreProvider, useStoreContext };
+// export { StoreProvider, useStoreContext };

@@ -3,21 +3,27 @@ import { Link, useParams } from "react-router-dom";
 import { useQuery } from '@apollo/react-hooks';
 
 import { QUERY_PRODUCTS } from "../utils/queries";
-import { useStoreContext } from "../utils/GlobalState";
+// import { useStoreContext } from "../utils/GlobalState";
 import {
   REMOVE_FROM_CART,
   UPDATE_CART_QUANTITY,
   ADD_TO_CART,
   UPDATE_PRODUCTS,
-} from '../utils/actions';
+} from '../utils/store/actions';
 import { idbPromise } from "../utils/helpers";
 // import { idbPromise } from "../../utils/helpers";
 import spinner from '../assets/spinner.gif'
 
 import Cart from '../components/Cart';
 
+import { useDispatch, useSelector } from 'react-redux'
+
+
 function Detail() {
-  const [state, dispatch] = useStoreContext();
+  const dispatch = useDispatch();
+  //initialState from store => newState
+  const state = useSelector(state => state);
+  // const [state, dispatch] = useStoreContext();
 
   const { id } = useParams();
 
@@ -38,7 +44,7 @@ function Detail() {
   //update global state, update in Indexeddb
   const addToCart = () => {
     const itemInCart = cart.find((cartItem) => cartItem._id === id)
-  
+
     if (itemInCart) {
       dispatch({
         type: UPDATE_CART_QUANTITY,
@@ -65,7 +71,7 @@ function Detail() {
       type: REMOVE_FROM_CART,
       _id: currentProduct._id
     });
-  
+
     // upon removal from cart, delete the item from IndexedDB using the `currentProduct._id` to locate what to remove
     idbPromise('cart', 'delete', { ...currentProduct });
   };

@@ -1,16 +1,19 @@
 import React, { useEffect } from 'react';
-import { UPDATE_CATEGORIES, UPDATE_CURRENT_CATEGORY } from '../../utils/actions';
+import { UPDATE_CATEGORIES, UPDATE_CURRENT_CATEGORY } from '../../utils/store/actions';
 import { useQuery } from '@apollo/react-hooks';
 import { QUERY_CATEGORIES } from "../../utils/queries";
-import { useStoreContext } from "../../utils/GlobalState";
+// import { useStoreContext } from "../../utils/GlobalState";
 import { idbPromise } from '../../utils/helpers';
+import { useDispatch, useSelector } from 'react-redux'
 
 function CategoryMenu() {
   // const { data: categoryData } = useQuery(QUERY_CATEGORIES);
   // const categories = categoryData?.categories || [];
-
+  const dispatch = useDispatch();
+  //initialState from store => newState
+  const state = useSelector(state => state);
   // immediately call, retrieve current state from global state object, .dispatch() method to update state
-  const [state, dispatch] = useStoreContext();
+  // const [state, dispatch] = useStoreContext();
   //only need categories array out of global state, destructure to use in JSX
   const { categories } = state;
   //query category data and store into global state object
@@ -62,6 +65,27 @@ function CategoryMenu() {
       ))}
     </div>
   );
+
+//   //cart props
+// const mapStateToProps = (state /*, ownProps*/) => {
+//   return {
+//     cart: state.cart,
+//     cartOpen: state.cartOpen
+//   }
+// }
+// //cart props
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     updateCategories: cart => dispatch({
+//       type: UPDATE_CATEGORIES,
+//       products: [...cart]
+//     })
+//   }
+// }
 }
 
 export default CategoryMenu;
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(CategoryMenu)

@@ -3,20 +3,27 @@ import CartItem from '../CartItem';
 import Auth from '../../utils/auth';
 import './style.css';
 import { useLazyQuery } from '@apollo/react-hooks';
-import { useStoreContext } from '../../utils/GlobalState';
-import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from '../../utils/actions';
+// import { useStoreContext } from '../../utils/GlobalState';
+import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from '../../utils/store/actions';
 import { idbPromise } from "../../utils/helpers";
 import { QUERY_CHECKOUT } from '../../utils/queries';
 import { loadStripe } from '@stripe/stripe-js';
+//useslector = state
+import { useDispatch, useSelector } from 'react-redux'
 
 //use to perform checkout redirect
 const stripePromise = loadStripe('pk_test_TYooMQauvdEDq54NiTphI7jx');
-
-const Cart = () => {
+//pass to connect
+  const Cart = () => {
+    const dispatch = useDispatch();
+    //initialState from store => newState
+    const state = useSelector(state => state);
 
   //use useStoreContext cutom Hook to establish a state variable and the dispatch function to update the state.
   //dispatch will call the toggle cart action
-  const [state, dispatch] = useStoreContext();
+
+  // const [state, dispatch] = useStoreContext();
+
   // to be able to query on Click, data variable contains checkout session, only after the query is called with the getCheckout() function
   //data holds returned data from useLazyQuery
   const [getCheckout, { data }] = useLazyQuery(QUERY_CHECKOUT);
@@ -26,8 +33,10 @@ const Cart = () => {
       const cart = await idbPromise('cart', 'get');
       //return array of itmes from indexedDB
       dispatch({ type: ADD_MULTIPLE_TO_CART, products: [...cart] });
+      // addMultipleToCart(cart)
     };
     //check if there is anything in the cart
+    //state.cart
     if (!state.cart.length) {
       getCart();
     }
@@ -42,7 +51,7 @@ const Cart = () => {
     }
   }, [data]);
 
-  console.log(state)
+  // console.log(state)
   function toggleCart() {
     dispatch({ type: TOGGLE_CART });
   }
@@ -67,7 +76,7 @@ const Cart = () => {
   //user clicks checkout, loops over the items saved in state.cart, adds Ids to new productIds array
   function submitCheckout() {
     const productIds = [];
-  
+
     state.cart.forEach((item) => {
       for (let i = 0; i < item.purchaseQuantity; i++) {
         productIds.push(item._id);
@@ -112,5 +121,26 @@ const Cart = () => {
     </div>
   );
 };
+//cart props
+// const mapStateToProps = (state /*, ownProps*/) => {
+//   return {
+//     cart: state.cart,
+//     cartOpen: state.cartOpen
+//   }
+// }
+// //cart props
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     addMultipleToCart: cart => dispatch({
+//       type: ADD_MULTIPLE_TO_CART,
+//       products: [...cart]
+//     })
+//   }
+// }
 
 export default Cart;
+//wrap cart component to connect to redux store
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(Cart)
